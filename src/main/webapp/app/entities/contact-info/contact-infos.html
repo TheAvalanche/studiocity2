@@ -34,15 +34,15 @@
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
-                <tr>
-                    <th><span translate="global.field.id">ID</span></th>
-                    <th><span translate="studiocity2App.contactInfo.type">Type</span></th>
-                    <th><span translate="studiocity2App.contactInfo.value">Value</span></th>
-                    <th><span translate="studiocity2App.contactInfo.studio">Studio</span></th>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.reset()">
+                    <th jh-sort-by="id"><span translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="type"><span translate="studiocity2App.contactInfo.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="value"><span translate="studiocity2App.contactInfo.value">Value</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="studio.id"><span translate="studiocity2App.contactInfo.studio">Studio</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody infinite-scroll="vm.loadPage(vm.page + 1)" infinite-scroll-disabled="vm.page >= vm.links['last']">
                 <tr ng-repeat="contactInfo in vm.contactInfos track by contactInfo.id">
                     <td><a ui-sref="contact-info-detail({id:contactInfo.id})">{{contactInfo.id}}</a></td>
                     <td translate="{{'studiocity2App.ContactInfoType.' + contactInfo.type}}">{{contactInfo.type}}</td>

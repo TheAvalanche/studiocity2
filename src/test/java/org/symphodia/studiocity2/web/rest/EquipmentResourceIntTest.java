@@ -3,6 +3,7 @@ package org.symphodia.studiocity2.web.rest;
 import org.symphodia.studiocity2.Studiocity2App;
 import org.symphodia.studiocity2.domain.Equipment;
 import org.symphodia.studiocity2.repository.EquipmentRepository;
+import org.symphodia.studiocity2.service.EquipmentService;
 import org.symphodia.studiocity2.repository.search.EquipmentSearchRepository;
 
 import org.junit.Before;
@@ -57,6 +58,9 @@ public class EquipmentResourceIntTest {
     private EquipmentRepository equipmentRepository;
 
     @Inject
+    private EquipmentService equipmentService;
+
+    @Inject
     private EquipmentSearchRepository equipmentSearchRepository;
 
     @Inject
@@ -73,8 +77,7 @@ public class EquipmentResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         EquipmentResource equipmentResource = new EquipmentResource();
-        ReflectionTestUtils.setField(equipmentResource, "equipmentSearchRepository", equipmentSearchRepository);
-        ReflectionTestUtils.setField(equipmentResource, "equipmentRepository", equipmentRepository);
+        ReflectionTestUtils.setField(equipmentResource, "equipmentService", equipmentService);
         this.restEquipmentMockMvc = MockMvcBuilders.standaloneSetup(equipmentResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();
@@ -180,8 +183,8 @@ public class EquipmentResourceIntTest {
     @Transactional
     public void updateEquipment() throws Exception {
         // Initialize the database
-        equipmentRepository.saveAndFlush(equipment);
-        equipmentSearchRepository.save(equipment);
+        equipmentService.save(equipment);
+
         int databaseSizeBeforeUpdate = equipmentRepository.findAll().size();
 
         // Update the equipment
@@ -215,8 +218,8 @@ public class EquipmentResourceIntTest {
     @Transactional
     public void deleteEquipment() throws Exception {
         // Initialize the database
-        equipmentRepository.saveAndFlush(equipment);
-        equipmentSearchRepository.save(equipment);
+        equipmentService.save(equipment);
+
         int databaseSizeBeforeDelete = equipmentRepository.findAll().size();
 
         // Get the equipment
@@ -237,8 +240,7 @@ public class EquipmentResourceIntTest {
     @Transactional
     public void searchEquipment() throws Exception {
         // Initialize the database
-        equipmentRepository.saveAndFlush(equipment);
-        equipmentSearchRepository.save(equipment);
+        equipmentService.save(equipment);
 
         // Search the equipment
         restEquipmentMockMvc.perform(get("/api/_search/equipment?query=id:" + equipment.getId()))

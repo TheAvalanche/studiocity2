@@ -2,11 +2,13 @@ package org.symphodia.studiocity2.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.symphodia.studiocity2.domain.ContactInfo;
-import org.symphodia.studiocity2.repository.ContactInfoRepository;
-import org.symphodia.studiocity2.repository.search.ContactInfoSearchRepository;
+import org.symphodia.studiocity2.service.ContactInfoService;
 import org.symphodia.studiocity2.web.rest.util.HeaderUtil;
+import org.symphodia.studiocity2.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,10 +36,7 @@ public class ContactInfoResource {
     private final Logger log = LoggerFactory.getLogger(ContactInfoResource.class);
         
     @Inject
-    private ContactInfoRepository contactInfoRepository;
-    
-    @Inject
-    private ContactInfoSearchRepository contactInfoSearchRepository;
+    private ContactInfoService contactInfoService;
     
     /**
      * POST  /contact-infos : Create a new contactInfo.
@@ -55,8 +54,7 @@ public class ContactInfoResource {
         if (contactInfo.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("contactInfo", "idexists", "A new contactInfo cannot already have an ID")).body(null);
         }
-        ContactInfo result = contactInfoRepository.save(contactInfo);
-        contactInfoSearchRepository.save(result);
+        ContactInfo result = contactInfoService.save(contactInfo);
         return ResponseEntity.created(new URI("/api/contact-infos/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert("contactInfo", result.getId().toString()))
             .body(result);
@@ -80,8 +78,7 @@ public class ContactInfoResource {
         if (contactInfo.getId() == null) {
             return createContactInfo(contactInfo);
         }
-        ContactInfo result = contactInfoRepository.save(contactInfo);
-        contactInfoSearchRepository.save(result);
+        ContactInfo result = contactInfoService.save(contactInfo);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert("contactInfo", contactInfo.getId().toString()))
             .body(result);
@@ -90,16 +87,20 @@ public class ContactInfoResource {
     /**
      * GET  /contact-infos : get all the contactInfos.
      *
+     * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of contactInfos in body
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @RequestMapping(value = "/contact-infos",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<ContactInfo> getAllContactInfos() {
-        log.debug("REST request to get all ContactInfos");
-        List<ContactInfo> contactInfos = contactInfoRepository.findAll();
-        return contactInfos;
+    public ResponseEntity<List<ContactInfo>> getAllContactInfos(Pageable pageable)
+        throws URISyntaxException {
+        log.debug("REST request to get a page of ContactInfos");
+        Page<ContactInfo> page = contactInfoService.findAll(pageable); 
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/contact-infos");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
@@ -114,7 +115,7 @@ public class ContactInfoResource {
     @Timed
     public ResponseEntity<ContactInfo> getContactInfo(@PathVariable Long id) {
         log.debug("REST request to get ContactInfo : {}", id);
-        ContactInfo contactInfo = contactInfoRepository.findOne(id);
+        ContactInfo contactInfo = contactInfoService.findOne(id);
         return Optional.ofNullable(contactInfo)
             .map(result -> new ResponseEntity<>(
                 result,
@@ -134,8 +135,7 @@ public class ContactInfoResource {
     @Timed
     public ResponseEntity<Void> deleteContactInfo(@PathVariable Long id) {
         log.debug("REST request to delete ContactInfo : {}", id);
-        contactInfoRepository.delete(id);
-        contactInfoSearchRepository.delete(id);
+        contactInfoService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("contactInfo", id.toString())).build();
     }
 
@@ -150,11 +150,12 @@ public class ContactInfoResource {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<ContactInfo> searchContactInfos(@RequestParam String query) {
-        log.debug("REST request to search ContactInfos for query {}", query);
-        return StreamSupport
-            .stream(contactInfoSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
+    public ResponseEntity<List<ContactInfo>> searchContactInfos(@RequestParam String query, Pageable pageable)
+        throws URISyntaxException {
+        log.debug("REST request to search for a page of ContactInfos for query {}", query);
+        Page<ContactInfo> page = contactInfoService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/contact-infos");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
 }

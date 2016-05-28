@@ -2,11 +2,13 @@ package org.symphodia.studiocity2.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.symphodia.studiocity2.domain.Studio;
-import org.symphodia.studiocity2.repository.StudioRepository;
-import org.symphodia.studiocity2.repository.search.StudioSearchRepository;
+import org.symphodia.studiocity2.service.StudioService;
 import org.symphodia.studiocity2.web.rest.util.HeaderUtil;
+import org.symphodia.studiocity2.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,10 +36,7 @@ public class StudioResource {
     private final Logger log = LoggerFactory.getLogger(StudioResource.class);
         
     @Inject
-    private StudioRepository studioRepository;
-    
-    @Inject
-    private StudioSearchRepository studioSearchRepository;
+    private StudioService studioService;
     
     /**
      * POST  /studios : Create a new studio.
@@ -55,8 +54,7 @@ public class StudioResource {
         if (studio.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("studio", "idexists", "A new studio cannot already have an ID")).body(null);
         }
-        Studio result = studioRepository.save(studio);
-        studioSearchRepository.save(result);
+        Studio result = studioService.save(studio);
         return ResponseEntity.created(new URI("/api/studios/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert("studio", result.getId().toString()))
             .body(result);
@@ -80,8 +78,7 @@ public class StudioResource {
         if (studio.getId() == null) {
             return createStudio(studio);
         }
-        Studio result = studioRepository.save(studio);
-        studioSearchRepository.save(result);
+        Studio result = studioService.save(studio);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert("studio", studio.getId().toString()))
             .body(result);
@@ -90,16 +87,20 @@ public class StudioResource {
     /**
      * GET  /studios : get all the studios.
      *
+     * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of studios in body
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @RequestMapping(value = "/studios",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<Studio> getAllStudios() {
-        log.debug("REST request to get all Studios");
-        List<Studio> studios = studioRepository.findAll();
-        return studios;
+    public ResponseEntity<List<Studio>> getAllStudios(Pageable pageable)
+        throws URISyntaxException {
+        log.debug("REST request to get a page of Studios");
+        Page<Studio> page = studioService.findAll(pageable); 
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/studios");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
@@ -114,7 +115,7 @@ public class StudioResource {
     @Timed
     public ResponseEntity<Studio> getStudio(@PathVariable Long id) {
         log.debug("REST request to get Studio : {}", id);
-        Studio studio = studioRepository.findOne(id);
+        Studio studio = studioService.findOne(id);
         return Optional.ofNullable(studio)
             .map(result -> new ResponseEntity<>(
                 result,
@@ -134,8 +135,7 @@ public class StudioResource {
     @Timed
     public ResponseEntity<Void> deleteStudio(@PathVariable Long id) {
         log.debug("REST request to delete Studio : {}", id);
-        studioRepository.delete(id);
-        studioSearchRepository.delete(id);
+        studioService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("studio", id.toString())).build();
     }
 
@@ -150,11 +150,12 @@ public class StudioResource {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<Studio> searchStudios(@RequestParam String query) {
-        log.debug("REST request to search Studios for query {}", query);
-        return StreamSupport
-            .stream(studioSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
+    public ResponseEntity<List<Studio>> searchStudios(@RequestParam String query, Pageable pageable)
+        throws URISyntaxException {
+        log.debug("REST request to search for a page of Studios for query {}", query);
+        Page<Studio> page = studioService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/studios");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
 }

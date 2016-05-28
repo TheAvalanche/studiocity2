@@ -41,6 +41,6 @@
   ],
   "changelogDate": "20160528194050",
   "dto": "no",
-  "pagination": "no",
-  "service": "no"
+  "pagination": "infinite-scroll",
+  "service": "serviceClass"
 }

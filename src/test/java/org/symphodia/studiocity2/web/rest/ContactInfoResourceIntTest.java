@@ -3,6 +3,7 @@ package org.symphodia.studiocity2.web.rest;
 import org.symphodia.studiocity2.Studiocity2App;
 import org.symphodia.studiocity2.domain.ContactInfo;
 import org.symphodia.studiocity2.repository.ContactInfoRepository;
+import org.symphodia.studiocity2.service.ContactInfoService;
 import org.symphodia.studiocity2.repository.search.ContactInfoSearchRepository;
 
 import org.junit.Before;
@@ -53,6 +54,9 @@ public class ContactInfoResourceIntTest {
     private ContactInfoRepository contactInfoRepository;
 
     @Inject
+    private ContactInfoService contactInfoService;
+
+    @Inject
     private ContactInfoSearchRepository contactInfoSearchRepository;
 
     @Inject
@@ -69,8 +73,7 @@ public class ContactInfoResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         ContactInfoResource contactInfoResource = new ContactInfoResource();
-        ReflectionTestUtils.setField(contactInfoResource, "contactInfoSearchRepository", contactInfoSearchRepository);
-        ReflectionTestUtils.setField(contactInfoResource, "contactInfoRepository", contactInfoRepository);
+        ReflectionTestUtils.setField(contactInfoResource, "contactInfoService", contactInfoService);
         this.restContactInfoMockMvc = MockMvcBuilders.standaloneSetup(contactInfoResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();
@@ -186,8 +189,8 @@ public class ContactInfoResourceIntTest {
     @Transactional
     public void updateContactInfo() throws Exception {
         // Initialize the database
-        contactInfoRepository.saveAndFlush(contactInfo);
-        contactInfoSearchRepository.save(contactInfo);
+        contactInfoService.save(contactInfo);
+
         int databaseSizeBeforeUpdate = contactInfoRepository.findAll().size();
 
         // Update the contactInfo
@@ -217,8 +220,8 @@ public class ContactInfoResourceIntTest {
     @Transactional
     public void deleteContactInfo() throws Exception {
         // Initialize the database
-        contactInfoRepository.saveAndFlush(contactInfo);
-        contactInfoSearchRepository.save(contactInfo);
+        contactInfoService.save(contactInfo);
+
         int databaseSizeBeforeDelete = contactInfoRepository.findAll().size();
 
         // Get the contactInfo
@@ -239,8 +242,7 @@ public class ContactInfoResourceIntTest {
     @Transactional
     public void searchContactInfo() throws Exception {
         // Initialize the database
-        contactInfoRepository.saveAndFlush(contactInfo);
-        contactInfoSearchRepository.save(contactInfo);
+        contactInfoService.save(contactInfo);
 
         // Search the contactInfo
         restContactInfoMockMvc.perform(get("/api/_search/contact-infos?query=id:" + contactInfo.getId()))

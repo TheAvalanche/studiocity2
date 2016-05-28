@@ -34,19 +34,19 @@
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
-                <tr>
-                    <th><span translate="global.field.id">ID</span></th>
-                    <th><span translate="studiocity2App.studio.name">Name</span></th>
-                    <th><span translate="studiocity2App.studio.description">Description</span></th>
-                    <th><span translate="studiocity2App.studio.city">City</span></th>
-                    <th><span translate="studiocity2App.studio.street">Street</span></th>
-                    <th><span translate="studiocity2App.studio.house">House</span></th>
-                    <th><span translate="studiocity2App.studio.index">Index</span></th>
-                    <th><span translate="studiocity2App.studio.image">Image</span></th>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.reset()">
+                    <th jh-sort-by="id"><span translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="name"><span translate="studiocity2App.studio.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="description"><span translate="studiocity2App.studio.description">Description</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="city"><span translate="studiocity2App.studio.city">City</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="street"><span translate="studiocity2App.studio.street">Street</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="house"><span translate="studiocity2App.studio.house">House</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="index"><span translate="studiocity2App.studio.index">Index</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="image"><span translate="studiocity2App.studio.image">Image</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody infinite-scroll="vm.loadPage(vm.page + 1)" infinite-scroll-disabled="vm.page >= vm.links['last']">
                 <tr ng-repeat="studio in vm.studios track by studio.id">
                     <td><a ui-sref="studio-detail({id:studio.id})">{{studio.id}}</a></td>
                     <td>{{studio.name}}</td>

@@ -2,11 +2,13 @@ package org.symphodia.studiocity2.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.symphodia.studiocity2.domain.Equipment;
-import org.symphodia.studiocity2.repository.EquipmentRepository;
-import org.symphodia.studiocity2.repository.search.EquipmentSearchRepository;
+import org.symphodia.studiocity2.service.EquipmentService;
 import org.symphodia.studiocity2.web.rest.util.HeaderUtil;
+import org.symphodia.studiocity2.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,10 +36,7 @@ public class EquipmentResource {
     private final Logger log = LoggerFactory.getLogger(EquipmentResource.class);
         
     @Inject
-    private EquipmentRepository equipmentRepository;
-    
-    @Inject
-    private EquipmentSearchRepository equipmentSearchRepository;
+    private EquipmentService equipmentService;
     
     /**
      * POST  /equipment : Create a new equipment.
@@ -55,8 +54,7 @@ public class EquipmentResource {
         if (equipment.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("equipment", "idexists", "A new equipment cannot already have an ID")).body(null);
         }
-        Equipment result = equipmentRepository.save(equipment);
-        equipmentSearchRepository.save(result);
+        Equipment result = equipmentService.save(equipment);
         return ResponseEntity.created(new URI("/api/equipment/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert("equipment", result.getId().toString()))
             .body(result);
@@ -80,8 +78,7 @@ public class EquipmentResource {
         if (equipment.getId() == null) {
             return createEquipment(equipment);
         }
-        Equipment result = equipmentRepository.save(equipment);
-        equipmentSearchRepository.save(result);
+        Equipment result = equipmentService.save(equipment);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert("equipment", equipment.getId().toString()))
             .body(result);
@@ -90,16 +87,20 @@ public class EquipmentResource {
     /**
      * GET  /equipment : get all the equipment.
      *
+     * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of equipment in body
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @RequestMapping(value = "/equipment",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<Equipment> getAllEquipment() {
-        log.debug("REST request to get all Equipment");
-        List<Equipment> equipment = equipmentRepository.findAll();
-        return equipment;
+    public ResponseEntity<List<Equipment>> getAllEquipment(Pageable pageable)
+        throws URISyntaxException {
+        log.debug("REST request to get a page of Equipment");
+        Page<Equipment> page = equipmentService.findAll(pageable); 
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/equipment");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
@@ -114,7 +115,7 @@ public class EquipmentResource {
     @Timed
     public ResponseEntity<Equipment> getEquipment(@PathVariable Long id) {
         log.debug("REST request to get Equipment : {}", id);
-        Equipment equipment = equipmentRepository.findOne(id);
+        Equipment equipment = equipmentService.findOne(id);
         return Optional.ofNullable(equipment)
             .map(result -> new ResponseEntity<>(
                 result,
@@ -134,8 +135,7 @@ public class EquipmentResource {
     @Timed
     public ResponseEntity<Void> deleteEquipment(@PathVariable Long id) {
         log.debug("REST request to delete Equipment : {}", id);
-        equipmentRepository.delete(id);
-        equipmentSearchRepository.delete(id);
+        equipmentService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("equipment", id.toString())).build();
     }
 
@@ -150,11 +150,12 @@ public class EquipmentResource {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<Equipment> searchEquipment(@RequestParam String query) {
-        log.debug("REST request to search Equipment for query {}", query);
-        return StreamSupport
-            .stream(equipmentSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
+    public ResponseEntity<List<Equipment>> searchEquipment(@RequestParam String query, Pageable pageable)
+        throws URISyntaxException {
+        log.debug("REST request to search for a page of Equipment for query {}", query);
+        Page<Equipment> page = equipmentService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/equipment");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
 }

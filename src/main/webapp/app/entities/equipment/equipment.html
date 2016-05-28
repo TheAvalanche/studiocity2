@@ -34,16 +34,16 @@
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
-                <tr>
-                    <th><span translate="global.field.id">ID</span></th>
-                    <th><span translate="studiocity2App.equipment.name">Name</span></th>
-                    <th><span translate="studiocity2App.equipment.description">Description</span></th>
-                    <th><span translate="studiocity2App.equipment.image">Image</span></th>
-                    <th><span translate="studiocity2App.equipment.room">Room</span></th>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.reset()">
+                    <th jh-sort-by="id"><span translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="name"><span translate="studiocity2App.equipment.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="description"><span translate="studiocity2App.equipment.description">Description</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="image"><span translate="studiocity2App.equipment.image">Image</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="room.id"><span translate="studiocity2App.equipment.room">Room</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody infinite-scroll="vm.loadPage(vm.page + 1)" infinite-scroll-disabled="vm.page >= vm.links['last']">
                 <tr ng-repeat="equipment in vm.equipment track by equipment.id">
                     <td><a ui-sref="equipment-detail({id:equipment.id})">{{equipment.id}}</a></td>
                     <td>{{equipment.name}}</td>

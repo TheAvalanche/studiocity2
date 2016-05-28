@@ -2,11 +2,13 @@ package org.symphodia.studiocity2.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.symphodia.studiocity2.domain.Room;
-import org.symphodia.studiocity2.repository.RoomRepository;
-import org.symphodia.studiocity2.repository.search.RoomSearchRepository;
+import org.symphodia.studiocity2.service.RoomService;
 import org.symphodia.studiocity2.web.rest.util.HeaderUtil;
+import org.symphodia.studiocity2.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,10 +36,7 @@ public class RoomResource {
     private final Logger log = LoggerFactory.getLogger(RoomResource.class);
         
     @Inject
-    private RoomRepository roomRepository;
-    
-    @Inject
-    private RoomSearchRepository roomSearchRepository;
+    private RoomService roomService;
     
     /**
      * POST  /rooms : Create a new room.
@@ -55,8 +54,7 @@ public class RoomResource {
         if (room.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("room", "idexists", "A new room cannot already have an ID")).body(null);
         }
-        Room result = roomRepository.save(room);
-        roomSearchRepository.save(result);
+        Room result = roomService.save(room);
         return ResponseEntity.created(new URI("/api/rooms/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert("room", result.getId().toString()))
             .body(result);
@@ -80,8 +78,7 @@ public class RoomResource {
         if (room.getId() == null) {
             return createRoom(room);
         }
-        Room result = roomRepository.save(room);
-        roomSearchRepository.save(result);
+        Room result = roomService.save(room);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert("room", room.getId().toString()))
             .body(result);
@@ -90,16 +87,20 @@ public class RoomResource {
     /**
      * GET  /rooms : get all the rooms.
      *
+     * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of rooms in body
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @RequestMapping(value = "/rooms",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<Room> getAllRooms() {
-        log.debug("REST request to get all Rooms");
-        List<Room> rooms = roomRepository.findAll();
-        return rooms;
+    public ResponseEntity<List<Room>> getAllRooms(Pageable pageable)
+        throws URISyntaxException {
+        log.debug("REST request to get a page of Rooms");
+        Page<Room> page = roomService.findAll(pageable); 
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/rooms");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
@@ -114,7 +115,7 @@ public class RoomResource {
     @Timed
     public ResponseEntity<Room> getRoom(@PathVariable Long id) {
         log.debug("REST request to get Room : {}", id);
-        Room room = roomRepository.findOne(id);
+        Room room = roomService.findOne(id);
         return Optional.ofNullable(room)
             .map(result -> new ResponseEntity<>(
                 result,
@@ -134,8 +135,7 @@ public class RoomResource {
     @Timed
     public ResponseEntity<Void> deleteRoom(@PathVariable Long id) {
         log.debug("REST request to delete Room : {}", id);
-        roomRepository.delete(id);
-        roomSearchRepository.delete(id);
+        roomService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("room", id.toString())).build();
     }
 
@@ -150,11 +150,12 @@ public class RoomResource {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<Room> searchRooms(@RequestParam String query) {
-        log.debug("REST request to search Rooms for query {}", query);
-        return StreamSupport
-            .stream(roomSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
+    public ResponseEntity<List<Room>> searchRooms(@RequestParam String query, Pageable pageable)
+        throws URISyntaxException {
+        log.debug("REST request to search for a page of Rooms for query {}", query);
+        Page<Room> page = roomService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/rooms");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
 }

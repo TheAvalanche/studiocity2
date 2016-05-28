@@ -44,3 +44,6 @@ relationship OneToMany {
 relationship OneToMany {
 	Room{equipments} to Equipment
 }
+
+paginate all with infinite-scroll
+service all with serviceClass

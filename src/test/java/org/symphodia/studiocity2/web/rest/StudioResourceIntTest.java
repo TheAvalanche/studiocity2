@@ -3,6 +3,7 @@ package org.symphodia.studiocity2.web.rest;
 import org.symphodia.studiocity2.Studiocity2App;
 import org.symphodia.studiocity2.domain.Studio;
 import org.symphodia.studiocity2.repository.StudioRepository;
+import org.symphodia.studiocity2.service.StudioService;
 import org.symphodia.studiocity2.repository.search.StudioSearchRepository;
 
 import org.junit.Before;
@@ -65,6 +66,9 @@ public class StudioResourceIntTest {
     private StudioRepository studioRepository;
 
     @Inject
+    private StudioService studioService;
+
+    @Inject
     private StudioSearchRepository studioSearchRepository;
 
     @Inject
@@ -81,8 +85,7 @@ public class StudioResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         StudioResource studioResource = new StudioResource();
-        ReflectionTestUtils.setField(studioResource, "studioSearchRepository", studioSearchRepository);
-        ReflectionTestUtils.setField(studioResource, "studioRepository", studioRepository);
+        ReflectionTestUtils.setField(studioResource, "studioService", studioService);
         this.restStudioMockMvc = MockMvcBuilders.standaloneSetup(studioResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();
@@ -258,8 +261,8 @@ public class StudioResourceIntTest {
     @Transactional
     public void updateStudio() throws Exception {
         // Initialize the database
-        studioRepository.saveAndFlush(studio);
-        studioSearchRepository.save(studio);
+        studioService.save(studio);
+
         int databaseSizeBeforeUpdate = studioRepository.findAll().size();
 
         // Update the studio
@@ -301,8 +304,8 @@ public class StudioResourceIntTest {
     @Transactional
     public void deleteStudio() throws Exception {
         // Initialize the database
-        studioRepository.saveAndFlush(studio);
-        studioSearchRepository.save(studio);
+        studioService.save(studio);
+
         int databaseSizeBeforeDelete = studioRepository.findAll().size();
 
         // Get the studio
@@ -323,8 +326,7 @@ public class StudioResourceIntTest {
     @Transactional
     public void searchStudio() throws Exception {
         // Initialize the database
-        studioRepository.saveAndFlush(studio);
-        studioSearchRepository.save(studio);
+        studioService.save(studio);
 
         // Search the studio
         restStudioMockMvc.perform(get("/api/_search/studios?query=id:" + studio.getId()))

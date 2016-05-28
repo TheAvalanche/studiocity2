@@ -3,6 +3,7 @@ package org.symphodia.studiocity2.web.rest;
 import org.symphodia.studiocity2.Studiocity2App;
 import org.symphodia.studiocity2.domain.Room;
 import org.symphodia.studiocity2.repository.RoomRepository;
+import org.symphodia.studiocity2.service.RoomService;
 import org.symphodia.studiocity2.repository.search.RoomSearchRepository;
 
 import org.junit.Before;
@@ -58,6 +59,9 @@ public class RoomResourceIntTest {
     private RoomRepository roomRepository;
 
     @Inject
+    private RoomService roomService;
+
+    @Inject
     private RoomSearchRepository roomSearchRepository;
 
     @Inject
@@ -74,8 +78,7 @@ public class RoomResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         RoomResource roomResource = new RoomResource();
-        ReflectionTestUtils.setField(roomResource, "roomSearchRepository", roomSearchRepository);
-        ReflectionTestUtils.setField(roomResource, "roomRepository", roomRepository);
+        ReflectionTestUtils.setField(roomResource, "roomService", roomService);
         this.restRoomMockMvc = MockMvcBuilders.standaloneSetup(roomResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();
@@ -163,8 +166,8 @@ public class RoomResourceIntTest {
     @Transactional
     public void updateRoom() throws Exception {
         // Initialize the database
-        roomRepository.saveAndFlush(room);
-        roomSearchRepository.save(room);
+        roomService.save(room);
+
         int databaseSizeBeforeUpdate = roomRepository.findAll().size();
 
         // Update the room
@@ -198,8 +201,8 @@ public class RoomResourceIntTest {
     @Transactional
     public void deleteRoom() throws Exception {
         // Initialize the database
-        roomRepository.saveAndFlush(room);
-        roomSearchRepository.save(room);
+        roomService.save(room);
+
         int databaseSizeBeforeDelete = roomRepository.findAll().size();
 
         // Get the room
@@ -220,8 +223,7 @@ public class RoomResourceIntTest {
     @Transactional
     public void searchRoom() throws Exception {
         // Initialize the database
-        roomRepository.saveAndFlush(room);
-        roomSearchRepository.save(room);
+        roomService.save(room);
 
         // Search the room
         restRoomMockMvc.perform(get("/api/_search/rooms?query=id:" + room.getId()))
