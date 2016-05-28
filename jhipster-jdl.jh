@@ -1,0 +1,46 @@
+entity Studio {
+	id Long,
+    name String required minlength(1) maxlength(255),
+    description String minlength(1) maxlength(4096),
+    city String required minlength(2) maxlength(255),
+    street String required minlength(2) maxlength(255),
+    house String required minlength(1) maxlength(255),
+    index String minlength(2) maxlength(10)
+    image ImageBlob
+}
+
+entity ContactInfo {
+	id Long,
+    type ContactInfoType required,
+    value String required minlength(2) maxlength(255)
+}
+
+entity Room {
+	id Long,
+    index Integer,
+    description String minlength(1) maxlength(4096),
+    image ImageBlob
+}
+
+entity Equipment {
+	id Long,
+    name String required minlength(1) maxlength(255),
+    description String minlength(1) maxlength(4096),
+    image ImageBlob
+}
+
+enum ContactInfoType {
+	PHONE, WEBSITE, FACEBOOK, YOUTUBE
+}
+
+relationship OneToMany {
+	Studio{contactInfos} to ContactInfo
+}
+
+relationship OneToMany {
+	Studio{rooms} to Room
+}
+
+relationship OneToMany {
+	Room{equipments} to Equipment
+}
