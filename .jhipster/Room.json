@@ -1,0 +1,46 @@
+{
+  "relationships": [
+    {
+      "relationshipId": 1,
+      "relationshipName": "studio",
+      "otherEntityName": "studio",
+      "relationshipType": "many-to-one",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipId": 2,
+      "relationshipName": "equipments",
+      "otherEntityName": "equipment",
+      "relationshipType": "one-to-many",
+      "otherEntityRelationshipName": "room"
+    }
+  ],
+  "fields": [
+    {
+      "fieldId": 1,
+      "fieldName": "index",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldId": 2,
+      "fieldName": "description",
+      "fieldType": "String",
+      "fieldValidateRules": [
+        "minlength",
+        "maxlength"
+      ],
+      "fieldValidateRulesMinlength": 1,
+      "fieldValidateRulesMaxlength": 4096
+    },
+    {
+      "fieldId": 3,
+      "fieldName": "image",
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "image"
+    }
+  ],
+  "changelogDate": "20160528194050",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no"
+}

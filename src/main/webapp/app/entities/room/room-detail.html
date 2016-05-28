@@ -1,0 +1,35 @@
+
+<div>
+    <h2><span translate="studiocity2App.room.detail.title">Room</span> {{vm.room.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span translate="studiocity2App.room.index">Index</span></dt>
+        <dd>
+            <span>{{vm.room.index}}</span>
+        </dd>
+        <dt><span translate="studiocity2App.room.description">Description</span></dt>
+        <dd>
+            <span>{{vm.room.description}}</span>
+        </dd>
+        <dt><span translate="studiocity2App.room.image">Image</span></dt>
+        <dd>
+            <div ng-if="vm.room.image">
+                <a ng-click="vm.openFile(vm.room.imageContentType, vm.room.image)">
+                    <img data-ng-src="{{'data:' + vm.room.imageContentType + ';base64,' + vm.room.image}}" style="max-width: 100%;"/>
+                </a>
+                {{vm.room.imageContentType}}, {{vm.byteSize(vm.room.image)}}
+            </div>
+        </dd>
+        <dt><span translate="studiocity2App.room.studio">Studio</span></dt>
+        <dd>
+            <a ui-sref="studio-detail({id:vm.room.studio.id})">{{vm.room.studio.id}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            onclick="window.history.back()"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span translate="entity.action.back"> Back</span>
+    </button>
+</div>

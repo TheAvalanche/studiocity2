@@ -1,0 +1,24 @@
+{
+    "studiocity2App": {
+        "contactInfo" : {
+            "home": {
+                "title": "Contact Infos",
+                "createLabel": "Создать новый Contact Info",
+                "createOrEditLabel": "Создать или отредактировать Contact Info",
+                "search": "Найти Contact Info"
+            },
+            "created": "Новый Contact Info создан с идентификатором {{ param }}",
+            "updated": "Contact Info обновлен с идентификатором {{ param }}",
+            "deleted": "Contact Info удален с идентификатором {{ param }}",
+            "delete": {
+                "question": "Вы уверены что хотите удалить Contact Info {{ id }}?"
+            },
+            "detail": {
+                "title": "Contact Info"
+            },
+            "type": "Type",
+            "value": "Value",
+            "studio": "Studio"
+        }
+    }
+}

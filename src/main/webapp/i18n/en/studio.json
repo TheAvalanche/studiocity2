@@ -1,0 +1,30 @@
+{
+    "studiocity2App": {
+        "studio" : {
+            "home": {
+                "title": "Studios",
+                "createLabel": "Create a new Studio",
+                "createOrEditLabel": "Create or edit a Studio",
+                "search": "Search for Studio"
+            },
+            "created": "A new Studio is created with identifier {{ param }}",
+            "updated": "A Studio is updated with identifier {{ param }}",
+            "deleted": "A Studio is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Studio {{ id }}?"
+            },
+            "detail": {
+                "title": "Studio"
+            },
+            "name": "Name",
+            "description": "Description",
+            "city": "City",
+            "street": "Street",
+            "house": "House",
+            "index": "Index",
+            "image": "Image",
+            "contactInfos": "Contact Infos",
+            "rooms": "Rooms"
+        }
+    }
+}

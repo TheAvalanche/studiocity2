@@ -1,0 +1,25 @@
+{
+    "studiocity2App": {
+        "equipment" : {
+            "home": {
+                "title": "Equipment",
+                "createLabel": "Создать новый Equipment",
+                "createOrEditLabel": "Создать или отредактировать Equipment",
+                "search": "Найти Equipment"
+            },
+            "created": "Новый Equipment создан с идентификатором {{ param }}",
+            "updated": "Equipment обновлен с идентификатором {{ param }}",
+            "deleted": "Equipment удален с идентификатором {{ param }}",
+            "delete": {
+                "question": "Вы уверены что хотите удалить Equipment {{ id }}?"
+            },
+            "detail": {
+                "title": "Equipment"
+            },
+            "name": "Name",
+            "description": "Description",
+            "image": "Image",
+            "room": "Room"
+        }
+    }
+}

@@ -1,0 +1,30 @@
+{
+    "studiocity2App": {
+        "studio" : {
+            "home": {
+                "title": "Studios",
+                "createLabel": "Создать новый Studio",
+                "createOrEditLabel": "Создать или отредактировать Studio",
+                "search": "Найти Studio"
+            },
+            "created": "Новый Studio создан с идентификатором {{ param }}",
+            "updated": "Studio обновлен с идентификатором {{ param }}",
+            "deleted": "Studio удален с идентификатором {{ param }}",
+            "delete": {
+                "question": "Вы уверены что хотите удалить Studio {{ id }}?"
+            },
+            "detail": {
+                "title": "Studio"
+            },
+            "name": "Name",
+            "description": "Description",
+            "city": "City",
+            "street": "Street",
+            "house": "House",
+            "index": "Index",
+            "image": "Image",
+            "contactInfos": "Contact Infos",
+            "rooms": "Rooms"
+        }
+    }
+}

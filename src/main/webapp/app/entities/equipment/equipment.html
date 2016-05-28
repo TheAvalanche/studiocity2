@@ -1,0 +1,86 @@
+<div>
+    <h2 translate="studiocity2App.equipment.home.title">Equipment</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="equipment.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span class="hidden-xs"  translate="studiocity2App.equipment.home.createLabel">
+                        Create new Equipment
+                    </span>
+                </button>
+            </div>
+            <div class="col-xs-8 no-padding-right">
+                <form name="searchForm" class="form-inline">
+                    <div class="input-group pull-right" >
+                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'studiocity2App.equipment.home.search' | translate }}">
+                        <span  class="input-group-btn width-min" >
+                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
+                            <button class="btn btn-info" ng-click="vm.clear()">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr>
+                    <th><span translate="global.field.id">ID</span></th>
+                    <th><span translate="studiocity2App.equipment.name">Name</span></th>
+                    <th><span translate="studiocity2App.equipment.description">Description</span></th>
+                    <th><span translate="studiocity2App.equipment.image">Image</span></th>
+                    <th><span translate="studiocity2App.equipment.room">Room</span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="equipment in vm.equipment track by equipment.id">
+                    <td><a ui-sref="equipment-detail({id:equipment.id})">{{equipment.id}}</a></td>
+                    <td>{{equipment.name}}</td>
+                    <td>{{equipment.description}}</td>
+                    <td>
+                        <a ng-if="equipment.image" ng-click="vm.openFile(equipment.imageContentType, equipment.image)">
+                            <img data-ng-src="{{'data:' + equipment.imageContentType + ';base64,' + equipment.image}}" style="max-height: 30px;"/>
+                        </a>
+                        <span ng-if="equipment.image">{{equipment.imageContentType}}, {{vm.byteSize(equipment.image)}}</span>
+                    </td>
+                    <td>
+                        <a ui-sref="room-detail({id:equipment.room.id})">{{equipment.room.id}}</a>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="equipment-detail({id:equipment.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-xs hidden-sm" translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="equipment.edit({id:equipment.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-xs hidden-sm" translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="equipment.delete({id:equipment.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-xs hidden-sm" translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

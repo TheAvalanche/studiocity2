@@ -1,0 +1,35 @@
+
+<div>
+    <h2><span translate="studiocity2App.equipment.detail.title">Equipment</span> {{vm.equipment.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span translate="studiocity2App.equipment.name">Name</span></dt>
+        <dd>
+            <span>{{vm.equipment.name}}</span>
+        </dd>
+        <dt><span translate="studiocity2App.equipment.description">Description</span></dt>
+        <dd>
+            <span>{{vm.equipment.description}}</span>
+        </dd>
+        <dt><span translate="studiocity2App.equipment.image">Image</span></dt>
+        <dd>
+            <div ng-if="vm.equipment.image">
+                <a ng-click="vm.openFile(vm.equipment.imageContentType, vm.equipment.image)">
+                    <img data-ng-src="{{'data:' + vm.equipment.imageContentType + ';base64,' + vm.equipment.image}}" style="max-width: 100%;"/>
+                </a>
+                {{vm.equipment.imageContentType}}, {{vm.byteSize(vm.equipment.image)}}
+            </div>
+        </dd>
+        <dt><span translate="studiocity2App.equipment.room">Room</span></dt>
+        <dd>
+            <a ui-sref="room-detail({id:vm.equipment.room.id})">{{vm.equipment.room.id}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            onclick="window.history.back()"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span translate="entity.action.back"> Back</span>
+    </button>
+</div>

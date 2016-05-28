@@ -1,0 +1,90 @@
+<div>
+    <h2 translate="studiocity2App.studio.home.title">Studios</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="studio.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span class="hidden-xs"  translate="studiocity2App.studio.home.createLabel">
+                        Create new Studio
+                    </span>
+                </button>
+            </div>
+            <div class="col-xs-8 no-padding-right">
+                <form name="searchForm" class="form-inline">
+                    <div class="input-group pull-right" >
+                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'studiocity2App.studio.home.search' | translate }}">
+                        <span  class="input-group-btn width-min" >
+                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
+                            <button class="btn btn-info" ng-click="vm.clear()">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr>
+                    <th><span translate="global.field.id">ID</span></th>
+                    <th><span translate="studiocity2App.studio.name">Name</span></th>
+                    <th><span translate="studiocity2App.studio.description">Description</span></th>
+                    <th><span translate="studiocity2App.studio.city">City</span></th>
+                    <th><span translate="studiocity2App.studio.street">Street</span></th>
+                    <th><span translate="studiocity2App.studio.house">House</span></th>
+                    <th><span translate="studiocity2App.studio.index">Index</span></th>
+                    <th><span translate="studiocity2App.studio.image">Image</span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="studio in vm.studios track by studio.id">
+                    <td><a ui-sref="studio-detail({id:studio.id})">{{studio.id}}</a></td>
+                    <td>{{studio.name}}</td>
+                    <td>{{studio.description}}</td>
+                    <td>{{studio.city}}</td>
+                    <td>{{studio.street}}</td>
+                    <td>{{studio.house}}</td>
+                    <td>{{studio.index}}</td>
+                    <td>
+                        <a ng-if="studio.image" ng-click="vm.openFile(studio.imageContentType, studio.image)">
+                            <img data-ng-src="{{'data:' + studio.imageContentType + ';base64,' + studio.image}}" style="max-height: 30px;"/>
+                        </a>
+                        <span ng-if="studio.image">{{studio.imageContentType}}, {{vm.byteSize(studio.image)}}</span>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="studio-detail({id:studio.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-xs hidden-sm" translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="studio.edit({id:studio.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-xs hidden-sm" translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="studio.delete({id:studio.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-xs hidden-sm" translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

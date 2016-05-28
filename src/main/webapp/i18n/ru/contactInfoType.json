@@ -1,0 +1,11 @@
+{
+    "studiocity2App": {
+        "ContactInfoType" : {
+            "null": "",
+            "PHONE": "PHONE",
+            "WEBSITE": "WEBSITE",
+            "FACEBOOK": "FACEBOOK",
+            "YOUTUBE": "YOUTUBE"
+        }
+    }
+}

@@ -1,0 +1,26 @@
+
+<div>
+    <h2><span translate="studiocity2App.contactInfo.detail.title">Contact Info</span> {{vm.contactInfo.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span translate="studiocity2App.contactInfo.type">Type</span></dt>
+        <dd>
+            <span translate="{{'studiocity2App.ContactInfoType.' + vm.contactInfo.type}}">{{vm.contactInfo.type}}</span>
+        </dd>
+        <dt><span translate="studiocity2App.contactInfo.value">Value</span></dt>
+        <dd>
+            <span>{{vm.contactInfo.value}}</span>
+        </dd>
+        <dt><span translate="studiocity2App.contactInfo.studio">Studio</span></dt>
+        <dd>
+            <a ui-sref="studio-detail({id:vm.contactInfo.studio.id})">{{vm.contactInfo.studio.id}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            onclick="window.history.back()"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span translate="entity.action.back"> Back</span>
+    </button>
+</div>

@@ -1,0 +1,76 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myRoomLabel" translate="studiocity2App.room.home.createOrEditLabel">Create or edit a Room</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.room.id">
+            <label for="id" translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.room.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" translate="studiocity2App.room.index" for="field_index">Index</label>
+            <input type="number" class="form-control" name="index" id="field_index"
+                    ng-model="vm.room.index"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" translate="studiocity2App.room.description" for="field_description">Description</label>
+            <input type="text" class="form-control" name="description" id="field_description"
+                    ng-model="vm.room.description"
+                    ng-minlength="1" ng-maxlength="4096" />
+            <div ng-show="editForm.description.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.description.$error.minlength" translate="entity.validation.minlength" translate-value-min="1">
+                    This field is required to be at least 1 characters.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.description.$error.maxlength" translate="entity.validation.maxlength" translate-value-max="4096">
+                    This field cannot be longer than 4096 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group" ngf-drop ngf-change="vm.setImage($file, vm.room)" ngf-pattern="'image/*'">
+            <label class="control-label" translate="studiocity2App.room.image" for="field_image">Image</label>
+            <div>
+                <img data-ng-src="{{'data:' + vm.room.imageContentType + ';base64,' + vm.room.image}}" style="max-height: 100px;" ng-if="vm.room.image"/>
+                <div ng-if="vm.room.image" class="help-block clearfix">
+                    <span class="pull-left">{{vm.room.imageContentType}}, {{vm.byteSize(vm.room.image)}}</span>
+                    <button ng-click="vm.room.image=null;vm.room.imageContentType=null;"
+                            class="btn btn-default btn-xs pull-right">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                </div>
+                <button type="file" ngf-select class="btn btn-default btn-block"
+                        ngf-change="vm.setImage($file, vm.room)" accept="image/*" translate="entity.action.addimage">
+                    Add image
+                </button>
+            </div>
+            <input type="hidden" class="form-control" name="image" id="field_image"
+                    ng-model="vm.room.image"
+                     />
+            <input type="hidden" class="form-control" name="imageContentType" id="field_imageContentType"
+                    ng-model="vm.room.imageContentType" />
+        </div>
+
+        <div class="form-group">
+            <label translate="studiocity2App.room.studio" for="field_studio">Studio</label>
+            <select class="form-control" id="field_studio" name="studio" ng-model="vm.room.studio" ng-options="studio as studio.id for studio in vm.studios track by studio.id">
+                <option value=""></option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>
