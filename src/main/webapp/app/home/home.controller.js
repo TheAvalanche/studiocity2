@@ -5,29 +5,42 @@
         .module('studiocity2App')
         .controller('HomeController', HomeController);
 
-    HomeController.$inject = ['$scope', 'Principal', 'LoginService', '$state'];
+    HomeController.$inject = ['$scope', 'Principal', 'LoginService', '$state', 'Studio', 'ParseLinks'];
 
-    function HomeController ($scope, Principal, LoginService, $state) {
+    function HomeController ($scope, Principal, LoginService, $state, Studio, ParseLinks) {
         var vm = this;
 
-        vm.account = null;
-        vm.isAuthenticated = null;
-        vm.login = LoginService.open;
-        vm.register = register;
-        $scope.$on('authenticationSuccess', function() {
-            getAccount();
-        });
+        vm.studios = [];
+        vm.page = 0;
 
-        getAccount();
+        loadAll();
 
-        function getAccount() {
-            Principal.identity().then(function(account) {
-                vm.account = account;
-                vm.isAuthenticated = Principal.isAuthenticated;
-            });
+        function loadAll () {
+            Studio.query({
+                page: vm.page,
+                size: 20,
+                sort: sort()
+            }, onSuccess, onError);
+
+            function sort() {
+                return ['id'];
+            }
+
+            function onSuccess(data, headers) {
+                vm.links = ParseLinks.parse(headers('link'));
+                vm.totalItems = headers('X-Total-Count');
+                for (var i = 0; i < data.length; i++) {
+                    vm.studios.push(data[i]);
+                }
+            }
+            function onError(error) {
+                AlertService.error(error.data.message);
+            }
         }
-        function register () {
-            $state.go('register');
+
+        function loadPage(page) {
+            vm.page = page;
+            loadAll();
         }
     }
 })();
