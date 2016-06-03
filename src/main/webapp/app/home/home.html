@@ -1,35 +1,23 @@
 <div ng-cloak>
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th><span translate="global.field.id">ID</span></th>
-                <th><span translate="studiocity2App.studio.name">Name</span></th>
-                <th><span translate="studiocity2App.studio.description">Description</span></th>
-                <th><span translate="studiocity2App.studio.city">City</span></th>
-                <th><span translate="studiocity2App.studio.street">Street</span></th>
-                <th><span translate="studiocity2App.studio.house">House</span></th>
-                <th><span translate="studiocity2App.studio.index">Index</span></th>
-                <th><span translate="studiocity2App.studio.image">Image</span></th>
-            </tr>
-            </thead>
-            <tbody infinite-scroll="vm.loadPage(vm.page + 1)">
-            <tr ng-repeat="studio in vm.studios track by studio.id">
-                <td><a ui-sref="studio-detail({id:studio.id})">{{studio.id}}</a></td>
-                <td>{{studio.name}}</td>
-                <td>{{studio.description}}</td>
-                <td>{{studio.city}}</td>
-                <td>{{studio.street}}</td>
-                <td>{{studio.house}}</td>
-                <td>{{studio.index}}</td>
-                <td>
-                    <a ng-if="studio.image" ng-click="vm.openFile(studio.imageContentType, studio.image)">
-                        <img data-ng-src="{{'data:' + studio.imageContentType + ';base64,' + studio.image}}" style="max-height: 30px;"/>
-                    </a>
-                    <span ng-if="studio.image">{{studio.imageContentType}}, {{vm.byteSize(studio.image)}}</span>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+    <section infinite-scroll="vm.loadPage(vm.page + 1)">
+        <div class="row result-article" ng-repeat="studio in vm.studios track by studio.id">
+            <article>
+                <div class="col-lg-4 text-left">
+                    <figure>
+                        <img data-ng-src="{{'data:' + studio.imageContentType + ';base64,' + studio.image}}"
+                             style="max-height: 150px;"/>
+                    </figure>
+                </div>
+                <div class="col-lg-4 text-left">
+                    <h3 class="studio-header">{{studio.name}}</h3>
+                    <p ng-if="studio.street"><i class="fa fa-map-marker"></i> {{studio.street}} {{studio.house}},
+                        {{studio.city}}</p>
+                    <p class="section">{{studio.description}}</p>
+                </div>
+                <div class="col-lg-4 text-left">
+
+                </div>
+            </article>
+        </div>
+    </section>
 </div>
