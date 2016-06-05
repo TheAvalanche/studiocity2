@@ -12,6 +12,7 @@
 
         vm.studios = [];
         vm.page = 0;
+        vm.loadPage = loadPage;
 
         loadAll();
 

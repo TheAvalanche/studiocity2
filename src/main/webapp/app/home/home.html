@@ -1,5 +1,5 @@
 <div ng-cloak>
-    <section infinite-scroll="vm.loadPage(vm.page + 1)">
+    <section infinite-scroll="vm.loadPage(vm.page + 1)" infinite-scroll-disabled="vm.page >= vm.links['last']">
         <div class="row result-article" ng-repeat="studio in vm.studios track by studio.id">
             <article>
                 <div class="col-lg-4 text-left">
@@ -9,13 +9,16 @@
                     </figure>
                 </div>
                 <div class="col-lg-4 text-left">
-                    <h3 class="studio-header">{{studio.name}}</h3>
+                    <h3 class="voffsetno">{{studio.name}}</h3>
                     <p ng-if="studio.street"><i class="fa fa-map-marker"></i> {{studio.street}} {{studio.house}},
                         {{studio.city}}</p>
-                    <p class="section">{{studio.description}}</p>
+                    <p>{{studio.description}}</p>
                 </div>
                 <div class="col-lg-4 text-left">
-
+                    <p class="lead">{{studio.pricePerHour}} €/h</p>
+                    <button class="btn btn-primary" ui-sref="studio-detail({id:studio.id})">
+                        <span translate="global.button.details">Details</span>
+                    </button>
                 </div>
             </article>
         </div>

@@ -8,6 +8,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
@@ -62,8 +63,10 @@ public class Studio implements Serializable {
     @Column(name = "image_content_type")
     private String imageContentType;
 
-    @OneToMany(mappedBy = "studio")
-    @JsonIgnore
+    @Column(name = "price_per_hour", precision=10, scale=2)
+    private BigDecimal pricePerHour;
+
+    @OneToMany(mappedBy = "studio", fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<ContactInfo> contactInfos = new HashSet<>();
 
@@ -144,6 +147,14 @@ public class Studio implements Serializable {
         this.imageContentType = imageContentType;
     }
 
+    public BigDecimal getPricePerHour() {
+        return pricePerHour;
+    }
+
+    public void setPricePerHour(BigDecimal pricePerHour) {
+        this.pricePerHour = pricePerHour;
+    }
+
     public Set<ContactInfo> getContactInfos() {
         return contactInfos;
     }
@@ -192,6 +203,7 @@ public class Studio implements Serializable {
             ", index='" + index + "'" +
             ", image='" + image + "'" +
             ", imageContentType='" + imageContentType + "'" +
+            ", pricePerHour='" + pricePerHour + "'" +
             '}';
     }
 }

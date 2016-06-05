@@ -26,6 +26,7 @@ import org.springframework.util.Base64Utils;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import java.math.BigDecimal;;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -61,6 +62,9 @@ public class StudioResourceIntTest {
     private static final byte[] UPDATED_IMAGE = TestUtil.createByteArray(2, "1");
     private static final String DEFAULT_IMAGE_CONTENT_TYPE = "image/jpg";
     private static final String UPDATED_IMAGE_CONTENT_TYPE = "image/png";
+
+    private static final BigDecimal DEFAULT_PRICE_PER_HOUR = new BigDecimal(1);
+    private static final BigDecimal UPDATED_PRICE_PER_HOUR = new BigDecimal(2);
 
     @Inject
     private StudioRepository studioRepository;
@@ -103,6 +107,7 @@ public class StudioResourceIntTest {
         studio.setIndex(DEFAULT_INDEX);
         studio.setImage(DEFAULT_IMAGE);
         studio.setImageContentType(DEFAULT_IMAGE_CONTENT_TYPE);
+        studio.setPricePerHour(DEFAULT_PRICE_PER_HOUR);
     }
 
     @Test
@@ -129,6 +134,7 @@ public class StudioResourceIntTest {
         assertThat(testStudio.getIndex()).isEqualTo(DEFAULT_INDEX);
         assertThat(testStudio.getImage()).isEqualTo(DEFAULT_IMAGE);
         assertThat(testStudio.getImageContentType()).isEqualTo(DEFAULT_IMAGE_CONTENT_TYPE);
+        assertThat(testStudio.getPricePerHour()).isEqualTo(DEFAULT_PRICE_PER_HOUR);
 
         // Validate the Studio in ElasticSearch
         Studio studioEs = studioSearchRepository.findOne(testStudio.getId());
@@ -225,7 +231,8 @@ public class StudioResourceIntTest {
                 .andExpect(jsonPath("$.[*].house").value(hasItem(DEFAULT_HOUSE.toString())))
                 .andExpect(jsonPath("$.[*].index").value(hasItem(DEFAULT_INDEX.toString())))
                 .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
-                .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))));
+                .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))))
+                .andExpect(jsonPath("$.[*].pricePerHour").value(hasItem(DEFAULT_PRICE_PER_HOUR.intValue())));
     }
 
     @Test
@@ -246,7 +253,8 @@ public class StudioResourceIntTest {
             .andExpect(jsonPath("$.house").value(DEFAULT_HOUSE.toString()))
             .andExpect(jsonPath("$.index").value(DEFAULT_INDEX.toString()))
             .andExpect(jsonPath("$.imageContentType").value(DEFAULT_IMAGE_CONTENT_TYPE))
-            .andExpect(jsonPath("$.image").value(Base64Utils.encodeToString(DEFAULT_IMAGE)));
+            .andExpect(jsonPath("$.image").value(Base64Utils.encodeToString(DEFAULT_IMAGE)))
+            .andExpect(jsonPath("$.pricePerHour").value(DEFAULT_PRICE_PER_HOUR.intValue()));
     }
 
     @Test
@@ -276,6 +284,7 @@ public class StudioResourceIntTest {
         updatedStudio.setIndex(UPDATED_INDEX);
         updatedStudio.setImage(UPDATED_IMAGE);
         updatedStudio.setImageContentType(UPDATED_IMAGE_CONTENT_TYPE);
+        updatedStudio.setPricePerHour(UPDATED_PRICE_PER_HOUR);
 
         restStudioMockMvc.perform(put("/api/studios")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -294,6 +303,7 @@ public class StudioResourceIntTest {
         assertThat(testStudio.getIndex()).isEqualTo(UPDATED_INDEX);
         assertThat(testStudio.getImage()).isEqualTo(UPDATED_IMAGE);
         assertThat(testStudio.getImageContentType()).isEqualTo(UPDATED_IMAGE_CONTENT_TYPE);
+        assertThat(testStudio.getPricePerHour()).isEqualTo(UPDATED_PRICE_PER_HOUR);
 
         // Validate the Studio in ElasticSearch
         Studio studioEs = studioSearchRepository.findOne(testStudio.getId());
@@ -340,6 +350,7 @@ public class StudioResourceIntTest {
             .andExpect(jsonPath("$.[*].house").value(hasItem(DEFAULT_HOUSE.toString())))
             .andExpect(jsonPath("$.[*].index").value(hasItem(DEFAULT_INDEX.toString())))
             .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))));
+            .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))))
+            .andExpect(jsonPath("$.[*].pricePerHour").value(hasItem(DEFAULT_PRICE_PER_HOUR.intValue())));
     }
 }

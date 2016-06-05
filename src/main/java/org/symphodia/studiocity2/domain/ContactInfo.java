@@ -1,5 +1,6 @@
 package org.symphodia.studiocity2.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -37,6 +38,7 @@ public class ContactInfo implements Serializable {
     private String value;
 
     @ManyToOne
+    @JsonIgnore
     private Studio studio;
 
     public Long getId() {

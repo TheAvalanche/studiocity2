@@ -79,6 +79,7 @@
                                 index: null,
                                 image: null,
                                 imageContentType: null,
+                                pricePerHour: null,
                                 id: null
                             };
                         }

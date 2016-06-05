@@ -23,6 +23,7 @@
             "house": "House",
             "index": "Index",
             "image": "Image",
+            "pricePerHour": "Price Per Hour",
             "contactInfos": "Contact Infos",
             "rooms": "Rooms"
         }

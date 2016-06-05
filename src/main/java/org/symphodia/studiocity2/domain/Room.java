@@ -42,10 +42,10 @@ public class Room implements Serializable {
     private String imageContentType;
 
     @ManyToOne
+    @JsonIgnore
     private Studio studio;
 
     @OneToMany(mappedBy = "room")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Equipment> equipments = new HashSet<>();
 

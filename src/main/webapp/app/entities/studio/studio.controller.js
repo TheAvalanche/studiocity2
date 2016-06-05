@@ -9,7 +9,7 @@
 
     function StudioController ($scope, $state, DataUtils, Studio, StudioSearch, ParseLinks, AlertService) {
         var vm = this;
-        
+
         vm.studios = [];
         vm.loadPage = loadPage;
         vm.page = 0;

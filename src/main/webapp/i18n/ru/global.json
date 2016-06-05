@@ -80,6 +80,9 @@
         },
         "ribbon": {
             "dev":"Development"
+        },
+        "button": {
+            "details":"Подробнее"
         }
     },
     "entity": {
