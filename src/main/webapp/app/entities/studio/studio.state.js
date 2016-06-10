@@ -35,7 +35,6 @@
             parent: 'entity',
             url: '/studio/{id}',
             data: {
-                authorities: ['ROLE_USER'],
                 pageTitle: 'studiocity2App.studio.detail.title'
             },
             views: {

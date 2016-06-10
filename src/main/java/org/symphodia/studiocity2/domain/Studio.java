@@ -70,8 +70,7 @@ public class Studio implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<ContactInfo> contactInfos = new HashSet<>();
 
-    @OneToMany(mappedBy = "studio")
-    @JsonIgnore
+    @OneToMany(mappedBy = "studio", fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Room> rooms = new HashSet<>();
 

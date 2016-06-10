@@ -34,10 +34,10 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 public class StudioResource {
 
     private final Logger log = LoggerFactory.getLogger(StudioResource.class);
-        
+
     @Inject
     private StudioService studioService;
-    
+
     /**
      * POST  /studios : Create a new studio.
      *
@@ -98,7 +98,7 @@ public class StudioResource {
     public ResponseEntity<List<Studio>> getAllStudios(Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of Studios");
-        Page<Studio> page = studioService.findAll(pageable); 
+        Page<Studio> page = studioService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/studios");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -117,9 +117,7 @@ public class StudioResource {
         log.debug("REST request to get Studio : {}", id);
         Studio studio = studioService.findOne(id);
         return Optional.ofNullable(studio)
-            .map(result -> new ResponseEntity<>(
-                result,
-                HttpStatus.OK))
+            .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 

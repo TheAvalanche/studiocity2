@@ -1,48 +1,18 @@
 
 <div>
-    <h2><span translate="studiocity2App.studio.detail.title">Studio</span> {{vm.studio.id}}</h2>
-    <hr>
     <jhi-alert-error></jhi-alert-error>
-    <dl class="dl-horizontal jh-entity-details">
-        <dt><span translate="studiocity2App.studio.name">Name</span></dt>
-        <dd>
-            <span>{{vm.studio.name}}</span>
-        </dd>
-        <dt><span translate="studiocity2App.studio.description">Description</span></dt>
-        <dd>
-            <span>{{vm.studio.description}}</span>
-        </dd>
-        <dt><span translate="studiocity2App.studio.city">City</span></dt>
-        <dd>
-            <span>{{vm.studio.city}}</span>
-        </dd>
-        <dt><span translate="studiocity2App.studio.street">Street</span></dt>
-        <dd>
-            <span>{{vm.studio.street}}</span>
-        </dd>
-        <dt><span translate="studiocity2App.studio.house">House</span></dt>
-        <dd>
-            <span>{{vm.studio.house}}</span>
-        </dd>
-        <dt><span translate="studiocity2App.studio.index">Index</span></dt>
-        <dd>
-            <span>{{vm.studio.index}}</span>
-        </dd>
-        <dt><span translate="studiocity2App.studio.image">Image</span></dt>
-        <dd>
-            <div ng-if="vm.studio.image">
-                <a ng-click="vm.openFile(vm.studio.imageContentType, vm.studio.image)">
-                    <img data-ng-src="{{'data:' + vm.studio.imageContentType + ';base64,' + vm.studio.image}}" style="max-width: 100%;"/>
-                </a>
-                {{vm.studio.imageContentType}}, {{vm.byteSize(vm.studio.image)}}
-            </div>
-        </dd>
-        <dt><span translate="studiocity2App.studio.pricePerHour">Price Per Hour</span></dt>
-        <dd>
-            <span>{{vm.studio.pricePerHour}}</span>
-        </dd>
-    </dl>
-
+    <h2><span>{{vm.studio.name}}</span></h2>
+    <span>{{vm.studio.city}}, {{vm.studio.street}} {{vm.studio.house}}, {{vm.studio.index}}</span>
+    <img data-ng-src="{{'data:' + vm.studio.imageContentType + ';base64,' + vm.studio.image}}" style="max-width: 100%;"/>
+    <hr>
+    <p>{{vm.studio.description}}</p>
+    <span translate="studiocity2App.studio.pricePerHour">Price Per Hour</span><span> {{vm.studio.pricePerHour}} €/h</span>
+    <uib-tabset>
+        <uib-tab index="$index + 1" ng-repeat="room in vm.studio.rooms" heading="Room {{room.index}}">
+            {{room.description}}
+        </uib-tab>
+    </uib-tabset>
+    <hr>
     <button type="submit"
             onclick="window.history.back()"
             class="btn btn-info">

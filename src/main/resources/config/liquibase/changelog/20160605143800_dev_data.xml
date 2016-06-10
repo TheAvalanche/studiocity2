@@ -22,6 +22,11 @@
                   separator=";"
                   tableName="contact_info"/>
 
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/room_dev.csv"
+                  separator=";"
+                  tableName="room"/>
+
 
     </changeSet>
 
