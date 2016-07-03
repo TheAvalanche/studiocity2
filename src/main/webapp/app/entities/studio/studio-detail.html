@@ -1,17 +1,37 @@
-
 <div>
     <jhi-alert-error></jhi-alert-error>
-    <h2><span>{{vm.studio.name}}</span></h2>
-    <span>{{vm.studio.city}}, {{vm.studio.street}} {{vm.studio.house}}, {{vm.studio.index}}</span>
-    <img data-ng-src="{{'data:' + vm.studio.imageContentType + ';base64,' + vm.studio.image}}" style="max-width: 100%;"/>
+    <div class="row">
+        <div class="col-md-12">
+            <h2><span>{{vm.studio.name}}</span></h2>
+        </div>
+    </div>
     <hr>
-    <p>{{vm.studio.description}}</p>
-    <span translate="studiocity2App.studio.pricePerHour">Price Per Hour</span><span> {{vm.studio.pricePerHour}} €/h</span>
+    <div class="row">
+        <div class="col-md-5">
+            <p><i>{{vm.studio.city}}, {{vm.studio.street}} {{vm.studio.house}}, {{vm.studio.index}}</i></p>
+            <p><span>{{vm.studio.pricePerHour}} €/h</span></p>
+            <p>{{vm.studio.contactInfos[0].value}}</p>
+            <p>{{vm.studio.description}}</p>
+        </div>
+        <div class="col-md-5 col-md-offset-2">
+            <img data-ng-src="{{'data:' + vm.studio.imageContentType + ';base64,' + vm.studio.image}}"
+                 style="max-width: 100%;"/>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
     <uib-tabset>
         <uib-tab index="$index + 1" ng-repeat="room in vm.studio.rooms" heading="Room {{room.index}}">
-            {{room.description}}
+            <div class="col-md-5 voffset3">
+                <img data-ng-src="{{'data:' + room.imageContentType + ';base64,' + room.image}}"
+                     style="max-width: 100%;"/>
+            </div>
+            <div class="col-md-5 col-md-offset-2 voffset3">
+                {{room.description}}
+            </div>
         </uib-tab>
     </uib-tabset>
+    </div>
     <hr>
     <button type="submit"
             onclick="window.history.back()"
